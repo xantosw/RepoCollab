@@ -1,12 +1,12 @@
-package edu.rit.se.RepoForensics;
+package edu.rit.se.RepoCollab;
 
 import java.io.BufferedReader;
 import java.util.HashMap;
 
-import edu.rit.se.RepoForensics.File.BlameFileLine;
-import edu.rit.se.RepoForensics.File.RepoFile;
-import edu.rit.se.RepoForensics.File.SVNBlameFileLine;
-import edu.rit.se.RepoForensics.File.SVNFile;
+import edu.rit.se.RepoCollab.File.BlameFileLine;
+import edu.rit.se.RepoCollab.File.RepoFile;
+import edu.rit.se.RepoCollab.File.SVNBlameFileLine;
+import edu.rit.se.RepoCollab.File.SVNFile;
 
 public class SVNCommand extends RepositoryCommand{
 

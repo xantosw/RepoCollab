@@ -1,4 +1,4 @@
-package edu.rit.se.RepoForensics.File;
+package edu.rit.se.RepoCollab.File;
 
 public abstract class BlameFileLine {
 	

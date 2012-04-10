@@ -1,4 +1,4 @@
-package edu.rit.se.RepoForensics;
+package edu.rit.se.RepoCollab;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import edu.rit.se.RepoForensics.File.RepoFile;
+import edu.rit.se.RepoCollab.File.RepoFile;
 
 public abstract class RepositoryCommand {
 	

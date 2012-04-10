@@ -1,13 +1,13 @@
-package edu.rit.se.RepoForensics;
+package edu.rit.se.RepoCollab;
 
 import java.io.*;
 import java.util.regex.Pattern;
 
-import edu.rit.se.RepoForensics.File.BlameFileLine;
-import edu.rit.se.RepoForensics.File.RepoFile;
-import edu.rit.se.RepoForensics.File.SVNBlameFileLine;
+import edu.rit.se.RepoCollab.File.BlameFileLine;
+import edu.rit.se.RepoCollab.File.RepoFile;
+import edu.rit.se.RepoCollab.File.SVNBlameFileLine;
 
-public class RepositoryForensic {
+public class RepositoryCollabMain {
 
 	/**
 	 * @param args
