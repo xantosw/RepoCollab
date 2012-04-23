@@ -17,6 +17,7 @@ public class SVNBlameFileLine extends BlameFileLine{
         String[] revAndAuthor = lineRev.trim().split("\\s+");
          
         setSourceLine(source);
+        //System.out.println(revAndAuthor[0]);
         setLineRev(Integer.parseInt(revAndAuthor[0]));
         setAuthor(revAndAuthor[1]);
 	}
