@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
+import com.mysql.jdbc.*;
+
 public class DBUtil {
 
 	private String user;
@@ -31,7 +33,7 @@ public class DBUtil {
 	}
 	
 	private Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(url, user, password);
+		return (com.mysql.jdbc.Connection)DriverManager.getConnection(url, user, password);
 	}
 
 	public boolean executeInsertSQL(String preparedStatement, Object[] values) throws SQLException {
@@ -41,11 +43,11 @@ public class DBUtil {
 		//set the appropriate parameters using the apppropriate type; current types supported ints and varchars
 		//Use class names to determine type
 		for(int i = 0; i < values.length; i++){
-			SQLTypes type = SQLTypes.valueOf(values[i].getClass().getName().toUpperCase());
+			SQLTypes type = SQLTypes.valueOf(values[i].getClass().getSimpleName().toUpperCase());
 
 			switch(type){
-				case STRING: ps.setString(i, values[i].toString()); break;
-				case INTEGER: ps.setInt(i, (Integer)values[i]); break;
+				case STRING: ps.setString(i+1, values[i].toString()); break;
+				case INTEGER: ps.setInt(i+1, (Integer)values[i]); break;
 			}
 		}
 		
