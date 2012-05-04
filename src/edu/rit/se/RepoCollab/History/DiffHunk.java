@@ -24,6 +24,8 @@ import java.util.regex.Pattern;
 public class DiffHunk {
 	private String originStartLine;
 	private String originNumLinesAffected;
+	private String destinationStartLine;
+	private String destinationNumLines;
 	private String rawHunk;
 	
 	public DiffHunk(String rawHunk) throws Exception{
@@ -41,9 +43,10 @@ public class DiffHunk {
 		//for this study only need to grab lines deleted or modified from the origin
 		//ArrayList<String> matchList = new ArrayList<String>();
 		this.originStartLine = "###";
-		
+		this.destinationStartLine = "###";
 		//defaults to 1 if not included
 		this.originNumLinesAffected = "1";
+		this.destinationNumLines = "1";
 		
 		Pattern regex = Pattern.compile("(?<=@@\\s-)[0-9]+");
 		Matcher regexMatcher = regex.matcher(rawHunk);
@@ -61,7 +64,23 @@ public class DiffHunk {
 			// System.out.println( regexMatcher.group());
 			this.originNumLinesAffected = regexMatcher.group();
 		} 
-		//System.out.println("l=" + this.originStartLine + " :s=" + this.originNumLinesAffected);
+		
+		regex = Pattern.compile("(?<=\\+)[0-9]+");
+		regexMatcher = regex.matcher(rawHunk);
+		if(regexMatcher.find()) {
+			// System.out.println( regexMatcher.group());
+			this.destinationStartLine = regexMatcher.group();
+		} 
+		
+		regex = Pattern.compile("(?<=\\+" + this.destinationStartLine + ",)[0-9]+");
+		regexMatcher = regex.matcher(rawHunk);
+		if(regexMatcher.find()) {
+			// System.out.println( regexMatcher.group());
+			this.destinationNumLines = regexMatcher.group();
+		} 
+		
+		
+		System.out.println("l=" + this.originStartLine + " :s=" + this.originNumLinesAffected +"ld=" + this.destinationStartLine + " :sd=" + this.destinationNumLines );
 	}
 	
 	public int getOriginStartLine() {
@@ -72,6 +91,14 @@ public class DiffHunk {
 		return  Integer.parseInt(originNumLinesAffected);
 	}
 
+	public int getDestStartLine(){
+		return Integer.parseInt(destinationStartLine);
+	}
+	
+	public int getDestNumLines(){
+		return Integer.parseInt(destinationNumLines);
+	}
+	
 	public String getRawHunk() {
 		return this.rawHunk;
 	}

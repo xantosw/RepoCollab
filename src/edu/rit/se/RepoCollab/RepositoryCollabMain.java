@@ -13,9 +13,11 @@ import edu.rit.se.RepoCollab.History.DiffHunk;
 
 public class RepositoryCollabMain {
 
-	/**
-	 * @param args
-	 */
+	private static String INSERT_CHURN = 
+		"insert into REPO_CHURN (rev_id,file_path,author,collab_churn,num_lines_added,num_lines_deleted) values (?,?,?,?,?,?)";
+	private static String INSERT_AFFECTED_DEVS =
+		"insert into REPO_DEV_AFFECTED (rev_id, affected_dev, num_lines)";
+
 	/**
 	 * @param args
 	 */
@@ -44,7 +46,7 @@ public class RepositoryCollabMain {
             }
             */
 			
-			RepositoryCommand svnComm = new SVNCommand("https://svn.php.net/repository/php/php-src/trunk/run-tests.php");
+			RepositoryCommand svnComm = new SVNCommand("/Users/xantos/PHP/trunk/run-tests.php");
 
 			RepoFile svnfile = svnComm.buildRepoFile();
 			
@@ -75,19 +77,40 @@ public class RepositoryCollabMain {
 				HashMap<Integer,BlameFileLine> blamelines = currentPrevRev.getFileLines();
 				
 				ArrayList<DiffHunk> diffhunks = currRev.getFileDiffFromPrevVer();
-				
+				//need to capture:
+				//REPO_CHRUN = (rev_id,file_path,author,collab_churn,num_lines_added,num_lines_deleted) 
+				//AFF_DEV = (rev_id, affected_dev, num_lines)
 				System.out.println("Revision number:" + currRevNum + " : Author:" + author);
+				int collab_churn = 0;
+				int num_lines_deleted = 0;
+				int num_lines_added = 0;
+				HashMap<String,Integer> devToNumLinesMap = new HashMap<String, Integer>();
 				for(DiffHunk diff : diffhunks){
 					int startline = diff.getOriginStartLine();
-					int numlines = diff.getOriginNumLinesAffected();
+					int startnumlines = diff.getOriginNumLinesAffected();
+					int deststartline = diff.getDestStartLine();
+					int destnumlines = diff.getDestNumLines();
 					
-					while(numlines > 0){
-						int line = startline + (numlines - 1);
-						System.out.println("\t line number:" + line + " Author is: " + blamelines.get(line).getAuthor() );
-						numlines--;
+					while(startnumlines > 0){
+						int line = startline + (startnumlines - 1);
+						String owner = blamelines.get(line).getAuthor(); 
+						System.out.println("\t line number:" + line + " Author is: " + owner );
+						
+						if(!author.equalsIgnoreCase(owner)){
+							collab_churn++;
+							if(!devToNumLinesMap.containsKey(owner)){
+								devToNumLinesMap.put(owner, 1);
+							}else{
+								devToNumLinesMap.put(owner, devToNumLinesMap.get(owner) + 1);
+							}
+							
+						}
+						num_lines_deleted++;
+						startnumlines--;
 					}
+					num_lines_added += diff.getDestNumLines();
 				}
-				
+				System.out.println("\t\t collabchur:" +  collab_churn + " numdel:" + num_lines_deleted + " numadd:" + num_lines_added + " loc:" + devToNumLinesMap.size());
 				//for next iteration
 				currentPrevRev = currRev;
 			}
