@@ -1,6 +1,7 @@
 package edu.rit.se.RepoCollab;
 
 import java.io.BufferedReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.rit.se.RepoCollab.File.BlameFileLine;
@@ -12,6 +13,7 @@ public class SVNCommand extends RepositoryCommand{
 
 	private final String REPLACE_URL_SEQ = "#URL";
 	private final String REPLACE_REV_SEQ = "#REV";
+	private final String REPLACE_GREP_SEQ = "#GREP";
 	
 	private final String SVNBLAME = "svn blame #URL";
 	private final String SVNBLAMEREV = "svn blame --revision #REV #URL";
@@ -21,6 +23,7 @@ public class SVNCommand extends RepositoryCommand{
 	private final String SVNALLAUTHORS = "svn log --quiet #URL | grep \"^r\" | awk '{print $3}' | sort | uniq";
 	//using linux diff command instead of svn, to get rid of contexts in diff and grep to only grab the ranges"
 	private final String SVNDIFFNONCONTEXT = "svn diff --diff-cmd=diff -x -U0 -c #REV #URL | grep @@";
+	private final String SVNLOGGREP = "svn log #URL | grep \"#GREP\" -o | sort | uniq";
 	
 	public SVNCommand(String urlPathToFile) {
 		super(urlPathToFile);
@@ -69,6 +72,13 @@ public class SVNCommand extends RepositoryCommand{
 	@Override
 	public String allAuthorsCommand() {
 		String command = SVNALLAUTHORS.replace( REPLACE_URL_SEQ, this.getFileURL());
+		return command;
+	}
+	
+	@Override
+	public String logGrepCommand(String regex) {
+		String command = SVNLOGGREP.replace( REPLACE_URL_SEQ, this.getFileURL());
+		command = command.replace(REPLACE_GREP_SEQ, regex);
 		return command;
 	}
 
@@ -185,6 +195,20 @@ public class SVNCommand extends RepositoryCommand{
 		
 		return svnFile;
 	}
-
-
+	
+	public ArrayList<String> getLogGrepResults(String regex){
+		ArrayList<String> results = new ArrayList<String>();
+		try {
+			BufferedReader input = this.logGrep(regex);
+			String line = null;
+			while((line=input.readLine()) != null) {
+					results.add(line);
+				}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return results;
+	}
 }

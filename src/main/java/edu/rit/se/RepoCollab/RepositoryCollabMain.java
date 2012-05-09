@@ -39,7 +39,10 @@ public class RepositoryCollabMain {
 //			      System.out.println("Found file: " + f);
 //			    } 
 			System.out.println(found.size() + " files found...");
+			DBUtil dbUtil = new DBUtil();
+			int fileCounter = 0;
 			for(File file:found){
+				fileCounter++;
 				//RepositoryCommand svnComm = new SVNCommand("/Users/xantos/PHP/trunk/run-tests.php");
 				RepositoryCommand svnComm = new SVNCommand(file.getAbsolutePath());
 				RepoFile svnfile = svnComm.buildRepoFile();
@@ -63,7 +66,7 @@ public class RepositoryCollabMain {
 				// Do something ...
 	
 				// Get elapsed time in milliseconds
-				for(int i = 1; i < 50 && i < a.size(); i++){
+				for(int i = 1; i < a.size(); i++){
 					int currRevNum = Integer.parseInt(a.get(i));
 					RepoFile currRev = svnComm.buildRepoFileRev(currRevNum);
 					String filepath = currRev.getFileURL();
@@ -79,8 +82,6 @@ public class RepositoryCollabMain {
 					int num_lines_deleted = 0;
 					int num_lines_added = 0;
 					HashMap<String,Integer> devToNumLinesMap = new HashMap<String, Integer>();
-					
-					DBUtil dbUtil = new DBUtil();
 					
 					for(DiffHunk diff : diffhunks){
 						int startline = diff.getOriginStartLine();
@@ -124,6 +125,7 @@ public class RepositoryCollabMain {
 					System.out.println("\t\t collabchur:" +  collab_churn + " numdel:" + num_lines_deleted + " numadd:" + num_lines_added + " loc:" + devToNumLinesMap.size());
 					//for next iteration
 					currentPrevRev = currRev;
+					System.out.println("\t\t At: " + i + " out of " + a.size() + " for file: #" + fileCounter);
 				}
 				
 			

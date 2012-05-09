@@ -19,17 +19,19 @@ public abstract class RepositoryCommand {
 	}
 	
 	
-	public abstract String blameCommand();
+	protected abstract String blameCommand();
 	
-	public abstract String blameRevCommand(int rev);
+	protected abstract String blameRevCommand(int rev);
 	
-	public abstract String allFileRevisionsCommand();
+	protected abstract String allFileRevisionsCommand();
 	
-	public abstract String allAuthorsCommand();
+	protected abstract String allAuthorsCommand();
 	
-	public abstract String fileInfoCommand();
+	protected abstract String fileInfoCommand();
 	
-	public abstract String fileInfoForRevCommand(int rev);
+	protected abstract String fileInfoForRevCommand(int rev);
+	
+	protected abstract String logGrepCommand(String regex);
 	
 	/**
 	 * This command is supposed to only return the range information
@@ -40,7 +42,7 @@ public abstract class RepositoryCommand {
 	 * 
 	 * @return string command
 	 */
-	public abstract String diffNonContextCommand(int rev);
+	protected abstract String diffNonContextCommand(int rev);
 	
 	public abstract HashMap<String, String> buildFileInformation();
 	
@@ -49,6 +51,8 @@ public abstract class RepositoryCommand {
 	public abstract RepoFile buildRepoFile();
 	
 	public abstract RepoFile buildRepoFileRev(int rev);
+	
+	public abstract ArrayList<String> getLogGrepResults(String regex);
 	
 	private BufferedReader executeCommand(String command) throws Exception{
 		System.out.println("executing: " + command);
@@ -91,6 +95,11 @@ public abstract class RepositoryCommand {
 		return executeCommand(this.allAuthorsCommand());
 		
 	}
+	
+	public BufferedReader logGrep(String regex) throws Exception{
+		return executeCommand(this.logGrepCommand(regex));
+	}
+	
 	
 //	public String getFileInfoByName(String key){
 //		return this.fileInfo.get(key);
